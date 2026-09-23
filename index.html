@@ -172,6 +172,62 @@
   .kbd-hint kbd{font-family:inherit; font-size:.68rem; border:1px solid var(--border); border-radius:3px; padding:0 4px; background:#fff;}
   @media (hover:none){ .kbd-hint{display:none;} .brush kbd{display:none;} }
 
+  /* ---------- Detailmodus: Tagesliste ---------- */
+  .day-list{margin-top:10px;}
+  .day-list[hidden], .calendar-grid[hidden]{display:none;}
+  .dl-axis, .dl-row{display:grid; grid-template-columns:58px minmax(0,1fr) 64px; gap:8px; align-items:center;}
+  .dl-axis{font-size:.64rem; color:var(--muted); font-weight:700; padding:0 7px 2px;}
+  .dl-axis-track{position:relative; height:14px;}
+  .dl-axis-track span{position:absolute; transform:translateX(-50%);}
+  .dl-axis-sum{text-align:right;}
+  .dl-row{padding:4px 6px; border-radius:9px; cursor:pointer; border:1px solid transparent; margin-top:2px;}
+  .dl-row:hover{background:#f3f7f9;}
+  .dl-row.weekend{background:#f6f7f9;}
+  .dl-row:focus-visible{outline:3px solid rgba(15,138,138,.35); outline-offset:1px;}
+  .dl-row.sel{background:#fff; border-color:var(--navy); border-radius:9px 9px 0 0; box-shadow:0 4px 14px rgba(15,41,66,.10);}
+  .dl-date{font-size:.7rem; color:var(--muted); text-transform:uppercase; white-space:nowrap;}
+  .dl-date b{font-size:.95rem; color:var(--text);}
+  .dl-track{
+    position:relative; height:30px; border-radius:6px; background-color:#fff; border:1px solid #edf1f4;
+    background-image:linear-gradient(to right, #e6ebef 1px, transparent 1px);
+    background-size:calc(100% / 14) 100%;
+  }
+  .dl-midnight{position:absolute; top:0; bottom:0; border-left:2px dashed #c3ccd5;}
+  .dl-bar{position:absolute; top:3px; bottom:3px; background:var(--pbg,var(--teal-light)); border:1.5px solid var(--pc,var(--teal)); border-radius:6px; overflow:hidden;}
+  .dl-pause{position:absolute; top:0; bottom:0; background:repeating-linear-gradient(45deg, rgba(27,37,48,.22) 0 3px, rgba(255,255,255,.5) 3px 6px); cursor:grab; touch-action:none; z-index:1;}
+  .dl-h{position:absolute; top:0; bottom:0; width:12px; cursor:ew-resize; touch-action:none; z-index:2;}
+  .dl-h-s{left:0;} .dl-h-e{right:0;}
+  .dl-h::after{content:""; position:absolute; top:22%; bottom:22%; left:5px; width:3px; border-radius:2px; background:var(--pc,var(--teal)); opacity:.55;}
+  .dl-row.sel .dl-h::after{opacity:1;}
+  .dl-lbl{position:absolute; left:14px; right:14px; top:50%; transform:translateY(-50%); font-size:.66rem; font-weight:700; color:var(--pc,var(--teal)); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; z-index:1; text-shadow:0 0 3px #fff, 0 0 3px #fff;}
+  .dl-urlaub{position:absolute; inset:3px; border-radius:6px; background:#e6f6ea; border:1.5px dashed #2b8a3e; color:#2b8a3e; font-size:.74rem; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  .dl-empty{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:.72rem; color:var(--muted);}
+  .dl-sum{text-align:right; font-weight:700; font-size:.82rem; white-space:nowrap;}
+  .dl-warn{cursor:help;}
+  .dl-panel{margin:0 0 10px; padding:12px; border:1px solid var(--navy); border-top:1px dashed var(--border); border-radius:0 0 10px 10px; background:#fbfcfd; box-shadow:0 8px 16px rgba(15,41,66,.08);}
+  .dl-quick{display:flex; gap:8px;}
+  .dl-input{flex:1; min-width:0; padding:10px 12px; border:2px solid var(--teal); border-radius:8px; font-size:.95rem; font-family:inherit;}
+  .dl-err{font-size:.76rem; color:var(--danger); min-height:1.1em; margin:4px 0 2px;}
+  .dl-chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+  .dl-chip{border:1.5px solid var(--pc); background:var(--pbg); color:var(--pc); border-radius:999px; padding:6px 11px; font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit;}
+  .dl-chip:hover{filter:brightness(.97);}
+  .dl-chip.small{padding:4px 9px; font-size:.72rem;}
+  .dl-second{align-items:center;}
+  .dl-second-lbl{font-size:.74rem; font-weight:700; color:var(--navy2);}
+  .dl-adj{margin-top:10px; padding:8px 10px; border:1px dashed var(--border); border-radius:9px; background:#fff;}
+  .dl-adj-head{font-size:.8rem; color:var(--navy2); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .dl-adj-row{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:6px;}
+  .dl-grp{display:inline-flex; align-items:center; gap:4px;}
+  .dl-grp em{font-style:normal; font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; margin-right:2px;}
+  .dl-mini{border:1px solid var(--border); background:#eef2f5; color:var(--navy); border-radius:7px; padding:5px 9px; font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit; min-width:40px;}
+  .dl-mini:hover{background:#e2e8ec;}
+  .dl-mini.danger{background:#fdecea; color:var(--danger); border-color:#f5c6c0;}
+  .dl-warns{margin:10px 0 0; padding:8px 10px; list-style:none; background:#fff6e5; border:1px solid #f1cf8a; border-radius:8px; font-size:.78rem; color:#7a4b00;}
+  .dl-warns li+li{margin-top:3px;}
+  .dl-actions{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+  .dl-actions .btn:disabled{opacity:.45; cursor:default;}
+  .cal-hint code{font-size:.72rem; background:#eef2f5; border-radius:4px; padding:0 4px;}
+
   table.milog-table{width:100%; border-collapse:collapse; font-size:.82rem;}
   table.milog-table th, table.milog-table td{border:1px solid #333; padding:4px 6px; text-align:center;}
   table.milog-table th{background:#eef1f3; font-weight:700;}
@@ -218,6 +274,16 @@
     .stamp-bar{margin:12px -16px -16px; padding-left:8px; padding-right:8px;}
     .brush-row{gap:4px;}
     .stamp-status{width:100%; margin-left:0;}
+    .dl-axis, .dl-row{grid-template-columns:40px minmax(0,1fr) 50px; gap:5px;}
+    .dl-date{font-size:.6rem;}
+    .dl-date b{display:block; font-size:.9rem;}
+    .dl-track{height:34px;}
+    .dl-lbl{display:none;}
+    .dl-h{width:16px;}
+    .dl-panel{padding:10px;}
+    .dl-quick{flex-direction:column;}
+    .dl-mini{min-height:38px; min-width:46px; font-size:.84rem;}
+    .dl-chip{padding:8px 11px;}
   }
 </style>
 </head>
@@ -274,13 +340,14 @@
       <p class="cal-hint" id="calHint"></p>
       <div class="calendar-grid" id="wdLabels"></div>
       <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="day-list" id="dayList" hidden></div>
 
       <div class="stamp-bar" id="stampBar">
         <div class="stamp-bar-title">Schicht wählen, dann Tage antippen</div>
         <div class="brush-row" id="brushRow"></div>
         <div class="stamp-tools">
           <button class="btn btn-ghost btn-sm btn-toggle" type="button" id="btnSecondStamp" aria-pressed="false">➕ 2. Schicht</button>
-          <button class="btn btn-ghost btn-sm" type="button" id="btnUndo" disabled>↶ Rückgängig</button>
+          <button class="btn btn-ghost btn-sm js-undo" type="button" id="btnUndo" disabled>↶ Rückgängig</button>
           <button class="btn btn-ghost btn-sm" type="button" id="btnRepeatWeek">🔁 Erste Woche wiederholen</button>
           <span class="stamp-status" id="stampStatus" aria-live="polite"></span>
         </div>
@@ -800,6 +867,7 @@
     }
 
     updateMonthTotal();
+    if(uiPrefs.mode === "detail") renderDayList();
   }
 
   // ---------- Schnellmodus: Leiste, Modus, Rückgängig ----------
@@ -865,14 +933,18 @@
     var stamp = mode === "stamp";
     calendarGrid.classList.toggle("stamp-mode", stamp);
     stampBar.style.display = stamp ? "" : "none";
-    document.getElementById("calTitle").textContent = stamp ? "Kalender — Schnell ausfüllen" : "Kalender — Tag anklicken und Schicht auswählen";
+    calendarGrid.hidden = !stamp;
+    document.getElementById("wdLabels").hidden = !stamp;
+    dayList.hidden = stamp;
+    document.getElementById("calTitle").textContent = stamp ? "Kalender — Schnell ausfüllen" : "Kalender — Tagesliste";
     var hint = document.getElementById("calHint");
     if(stamp){
       hint.innerHTML = 'Unten eine Schicht wählen und Tage <strong>antippen</strong> – oder mit Finger/Maus <strong>über mehrere Tage ziehen</strong>. ' +
         'Nochmals tippen = löschen. Für zwei Schichten an einem Tag <strong>➕ 2. Schicht</strong> einschalten. <strong>Lange drücken</strong> oder Rechtsklick = Details (eigene Zeiten).' +
         '<span class="kbd-hint"> Tastatur: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Tag wählen, <kbd>1</kbd>–<kbd>5</kbd> Schicht, <kbd>U</kbd> Urlaub, <kbd>0</kbd> löschen, <kbd>+</kbd> 2. Schicht, <kbd>Strg</kbd>+<kbd>Z</kbd> rückgängig.</span>';
     } else {
-      hint.textContent = "Wähle eine vorbereitete Schicht oder trage Zeiten manuell ein. Alle Änderungen werden sofort auf diesem Gerät gespeichert.";
+      hint.innerHTML = 'Tag antippen → Schicht wählen, Zeiten <strong>schnell tippen</strong> (z. B. <code>630-15</code>, <code>2230-7 p3</code>, <code>630-14 / 1430-2230</code>) und mit <kbd>Enter</kbd> zum nächsten Tag. ' +
+        'In der Leiste die <strong>Enden ziehen</strong> = Beginn/Ende, den <strong>gestreiften Block ziehen</strong> = Pause (15-Min.-Schritte). ⚠️ = Hinweis zu Pause, Ruhezeit oder 10-Std.-Grenze (keine Rechtsberatung).';
     }
     renderCalendar();
   }
@@ -881,15 +953,18 @@
   });
 
   var undoStack = [];
+  function setUndoState(){
+    document.querySelectorAll(".js-undo").forEach(function(b){ b.disabled = undoStack.length === 0; });
+  }
   function pushUndo(){
     var key = monthKey(currentYear, currentMonth);
     undoStack.push({ key:key, json: JSON.stringify(getMonthData().days) });
     if(undoStack.length > 50) undoStack.shift();
-    btnUndo.disabled = false;
+    setUndoState();
   }
   function undo(){
     var snap = undoStack.pop();
-    btnUndo.disabled = undoStack.length === 0;
+    setUndoState();
     if(!snap) return;
     if(!state.months[snap.key]) state.months[snap.key] = { days:{} };
     state.months[snap.key].days = JSON.parse(snap.json);
@@ -975,7 +1050,7 @@
     pushUndo();
     var msg = applyToDay(day, k, true);
     if(!msg && JSON.stringify(getMonthData().days[day] || null) === snapBefore){
-      undoStack.pop(); btnUndo.disabled = undoStack.length === 0;
+      undoStack.pop(); setUndoState();
     }
     if(msg) showStampStatus(msg);
   }
@@ -1123,11 +1198,480 @@
       md.days[day] = JSON.parse(JSON.stringify(s));
       n++;
     }
-    if(!n){ undoStack.pop(); btnUndo.disabled = undoStack.length === 0; showStampStatus("Keine leeren Tage zum Ausfüllen"); return; }
+    if(!n){ undoStack.pop(); setUndoState(); showStampStatus("Keine leeren Tage zum Ausfüllen"); return; }
     saveState();
     renderCalendar();
     showStampStatus(n + " Tage nach Muster ausgefüllt");
   });
+
+  // ---------- Detailmodus: Tagesliste mit Zeitleiste ----------
+  // Zeitfenster der Leiste: 04:00 bis 08:00 am Folgetag (28 Std.)
+  var WIN_START = 4*60, WIN_LEN = 28*60, WIN_END = WIN_START + WIN_LEN;
+  var dayList = document.getElementById("dayList");
+  var listError = "";
+  var listDrag = null;
+  var listSuppressClick = false; // nur den Klick direkt nach einem Ziehen ignorieren
+
+  function toHHMM(abs){
+    var m = ((abs % 1440) + 1440) % 1440;
+    return String(Math.floor(m/60)).padStart(2,"0") + ":" + String(m%60).padStart(2,"0");
+  }
+  function pct(x){ return Math.max(0, Math.min(100, (x - WIN_START) / WIN_LEN * 100)); }
+  function round15(x){ return Math.round(x/15)*15; }
+  function clampNum(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+
+  // Schicht in absoluten Minuten, verankert im Zeitfenster der Leiste
+  function shiftWin(d, idx){
+    var n = String(idx);
+    var st = d["s"+n+"start"], en = d["s"+n+"end"];
+    if(!st || !en) return null;
+    var s = toMinutes(st), e = toMinutes(en);
+    if(s < WIN_START) s += 1440;
+    while(e <= s) e += 1440;
+    var ps = null, pe = null;
+    if(d["b"+n+"start"] && d["b"+n+"end"]){
+      ps = toMinutes(d["b"+n+"start"]); pe = toMinutes(d["b"+n+"end"]);
+      while(ps < s) ps += 1440;
+      while(pe <= ps) pe += 1440;
+    }
+    return {s:s, e:e, ps:ps, pe:pe};
+  }
+  function writeShift(d, idx, w){
+    var n = String(idx);
+    d["s"+n+"start"] = toHHMM(w.s); d["s"+n+"end"] = toHHMM(w.e);
+    if(w.ps != null){ d["b"+n+"start"] = toHHMM(w.ps); d["b"+n+"end"] = toHHMM(w.pe); }
+    else { d["b"+n+"start"] = ""; d["b"+n+"end"] = ""; }
+  }
+  // Pause innerhalb der Schicht halten (oder entfernen, wenn kein Platz)
+  function fitPause(w){
+    if(w.ps == null) return;
+    var len = w.pe - w.ps;
+    if(len >= w.e - w.s){ w.ps = w.pe = null; return; }
+    if(w.ps < w.s){ w.ps = w.s; w.pe = w.s + len; }
+    if(w.pe > w.e){ w.pe = w.e; w.ps = w.e - len; }
+  }
+  function autoPause(s, e){
+    var gross = e - s;
+    if(gross <= 360) return [null, null];
+    var len = (gross - 30 > 540) ? 45 : 30;
+    var ps = Math.round((s + (gross - len)/2) / 30) * 30;
+    ps = clampNum(ps, s, e - len);
+    return [ps, ps + len];
+  }
+  function matchPreset(s, e, bs, be){
+    var keys = Object.keys(presetMeta);
+    for(var i=0;i<keys.length;i++){
+      var p = shiftPresets[keys[i]];
+      if(p.start === s && p.end === e && p.bstart === (bs||"") && p.bend === (be||"")) return keys[i];
+    }
+    return "";
+  }
+  function detectPresets(d){
+    d.preset = d.s1start ? matchPreset(d.s1start, d.s1end, d.b1start, d.b1end) : "";
+    d.preset2 = d.s2start ? matchPreset(d.s2start, d.s2end, d.b2start, d.b2end) : "";
+  }
+
+  // ---------- Schnelleingabe: "630-15", "2230-7 p3", "630-14 / 1430-2230", "u", "0" ----------
+  function parseClock(tok){
+    tok = String(tok || "").trim().replace(/\s*(uhr|h)$/i, "");
+    var h, mi, m;
+    if((m = tok.match(/^(\d{1,2})[:.,h](\d{1,2})$/))){
+      h = +m[1]; mi = +m[2]; if(m[2].length === 1) mi *= 10;
+    } else if(/^\d{1,4}$/.test(tok)){
+      if(tok.length <= 2){ h = +tok; mi = 0; }
+      else { h = +tok.slice(0, -2); mi = +tok.slice(-2); }
+    } else return null;
+    if(h === 24 && mi === 0) h = 0;
+    if(h > 23 || mi > 59) return null;
+    return h*60 + mi;
+  }
+  function parseSegment(seg){
+    var parts = seg.split(/\s*p\s*/i);
+    if(parts.length > 2) return {error:"Unklare Pause: nur ein „p“ pro Schicht"};
+    var tt = parts[0].split(/\s*[-–]\s*/);
+    if(tt.length !== 2) return {error:"Format: Beginn-Ende, z. B. 630-15"};
+    var s = parseClock(tt[0]), e = parseClock(tt[1]);
+    if(s == null || e == null) return {error:"Uhrzeit nicht erkannt: „" + parts[0] + "“"};
+    if(s === e) return {error:"Beginn und Ende sind gleich"};
+    var eAbs = e; while(eAbs <= s) eAbs += 1440;
+    var ps = null, pe = null;
+    if(parts.length === 2){
+      var pp = parts[1].split(/\s*[-–]\s*/);
+      var a = parseClock(pp[0]);
+      if(a == null) return {error:"Pause nicht erkannt: „p" + parts[1] + "“"};
+      while(a < s) a += 1440;
+      var b;
+      if(pp[1]){ b = parseClock(pp[1]); if(b == null) return {error:"Pausenende nicht erkannt"}; while(b <= a) b += 1440; }
+      else b = a + ((eAbs - s - 30 > 540) ? 45 : 30);
+      if(b > eAbs) return {error:"Pause liegt außerhalb der Schicht"};
+      ps = a; pe = b;
+    } else {
+      var hit = null;
+      Object.keys(shiftPresets).forEach(function(k){
+        var p = shiftPresets[k];
+        if(!hit && p.start === toHHMM(s) && p.end === toHHMM(eAbs)) hit = p;
+      });
+      if(hit){
+        ps = toMinutes(hit.bstart); while(ps < s) ps += 1440;
+        pe = toMinutes(hit.bend); while(pe <= ps) pe += 1440;
+      } else {
+        var ap = autoPause(s, eAbs); ps = ap[0]; pe = ap[1];
+      }
+    }
+    return { start:toHHMM(s), end:toHHMM(eAbs), bstart: ps != null ? toHHMM(ps) : "", bend: pe != null ? toHHMM(pe) : "" };
+  }
+  function parseQuick(txt){
+    var t = String(txt || "").trim().toLowerCase();
+    if(!t) return {error:"Bitte etwas eingeben, z. B. 630-15"};
+    if(t === "u" || t === "urlaub") return {urlaub:true};
+    if(t === "0" || t === "frei" || t === "-" || t === "x") return {clear:true};
+    if(keyToBrush[t] && presetMeta[keyToBrush[t]]) return {preset:keyToBrush[t]};
+    var segs = t.split(/\s*[\/+,;]\s*/).filter(Boolean);
+    if(segs.length > 2) return {error:"Höchstens zwei Schichten pro Tag"};
+    var shifts = [];
+    for(var i=0;i<segs.length;i++){
+      var r = parseSegment(segs[i]);
+      if(r.error) return r;
+      shifts.push(r);
+    }
+    return {shifts:shifts};
+  }
+
+  // ---------- Hinweise (ArbZG-Faustregeln, keine Rechtsberatung) ----------
+  function peekDay(y, m, day){
+    if(day < 1){
+      var py = m === 0 ? y-1 : y, pm = m === 0 ? 11 : m-1;
+      var pmd = state.months[monthKey(py, pm)];
+      return pmd && pmd.days ? pmd.days[daysInMonth(py, pm)] : null;
+    }
+    var md = state.months[monthKey(y, m)];
+    return md && md.days ? md.days[day] : null;
+  }
+  function dayWarnings(day){
+    var d = peekDay(currentYear, currentMonth, day);
+    var out = [];
+    if(!dayHasData(d)) return out;
+    var net = dayNetMinutes(d);
+    var gross = segMinutes(d.s1start, d.s1end) + (d.s2start && d.s2end ? segMinutes(d.s2start, d.s2end) : 0);
+    var pause = gross - net;
+    if(net > 600) out.push("Mehr als 10 Std. Arbeitszeit (" + minutesToHoursComma(net) + " Std.)");
+    if(net > 540 && pause < 45) out.push("Pause zu kurz: ab 9 Std. mind. 45 Min.");
+    else if(net > 360 && pause < 30) out.push("Pause zu kurz: ab 6 Std. mind. 30 Min.");
+    if(d.s1start && d.s2start){
+      var a = toMinutes(d.s1start), ae = a + segMinutes(d.s1start, d.s1end);
+      var b = toMinutes(d.s2start); if(b < a) b += 1440;
+      if(b < ae) out.push("Schicht 1 und 2 überschneiden sich");
+    }
+    var prev = peekDay(currentYear, currentMonth, day - 1);
+    if(dayHasData(prev)){
+      var ps = prev.s2start && prev.s2end ? prev.s2start : prev.s1start;
+      var pe = prev.s2start && prev.s2end ? prev.s2end : prev.s1end;
+      var prevEnd = toMinutes(ps) + segMinutes(ps, pe);
+      var first = d.s1start;
+      if(d.s2start && toMinutes(d.s2start) < toMinutes(d.s1start)) first = d.s2start;
+      var rest = toMinutes(first) + 1440 - prevEnd;
+      if(rest < 0) out.push("Überschneidet sich mit der Schicht vom Vortag");
+      else if(rest < 660) out.push("Ruhezeit nur " + minutesToHoursComma(rest) + " Std. (mind. 11 Std.)");
+    }
+    return out;
+  }
+
+  // ---------- Rendering ----------
+  function barHtml(d, idx, key){
+    var w = shiftWin(d, idx);
+    if(!w) return "";
+    var cls = presetMeta[key] ? " p-" + key : " p-manual";
+    var left = pct(w.s), width = Math.max(pct(w.e) - left, 0.8);
+    var html = '<div class="dl-bar' + cls + '" style="left:' + left + '%;width:' + width + '%">';
+    if(w.ps != null){
+      var pl = (w.ps - w.s) / (w.e - w.s) * 100, pw = (w.pe - w.ps) / (w.e - w.s) * 100;
+      html += '<div class="dl-pause" data-drag="p" data-i="' + idx + '" style="left:' + pl + '%;width:' + pw + '%" title="Pause ' + d["b"+idx+"start"] + '–' + d["b"+idx+"end"] + ' (ziehen zum Verschieben)"></div>';
+    }
+    html += '<span class="dl-lbl">' + d["s"+idx+"start"] + '–' + d["s"+idx+"end"] + '</span>';
+    html += '<span class="dl-h dl-h-s" data-drag="s" data-i="' + idx + '" title="Beginn ziehen"></span>';
+    html += '<span class="dl-h dl-h-e" data-drag="e" data-i="' + idx + '" title="Ende ziehen"></span>';
+    return html + '</div>';
+  }
+  function chipHtml(act, k, small){
+    var ico = presetMeta[k] ? presetMeta[k].ico : (k === "urlaub" ? "🏖️" : "🧽");
+    var p = shiftPresets[k];
+    var sub = p ? p.start + "–" + p.end : (k === "urlaub" ? "Urlaub" : "Frei");
+    return '<button type="button" class="dl-chip p-' + k + (small ? " small" : "") + '" data-act="' + act + '" data-k="' + k + '">' + ico + ' ' + sub + '</button>';
+  }
+  function adjHtml(d, idx){
+    var n = String(idx);
+    var pause = d["b"+n+"start"] ? d["b"+n+"start"] + "–" + d["b"+n+"end"] : "keine";
+    function b(w, delta, label){ return '<button type="button" class="dl-mini" data-act="adj" data-i="' + idx + '" data-w="' + w + '" data-d="' + delta + '">' + label + '</button>'; }
+    return '<div class="dl-adj">' +
+      '<div class="dl-adj-head"><strong>Schicht ' + idx + ':</strong> ' + d["s"+n+"start"] + '–' + d["s"+n+"end"] + ' · Pause ' + pause +
+        (idx === 2 ? ' <button type="button" class="dl-mini danger" data-act="rm2">✕ entfernen</button>' : '') + '</div>' +
+      '<div class="dl-adj-row">' +
+        '<span class="dl-grp"><em>Beginn</em>' + b("s",-15,"−15") + b("s",15,"+15") + '</span>' +
+        '<span class="dl-grp"><em>Ende</em>' + b("e",-15,"−15") + b("e",15,"+15") + b("e",30,"+30") + '</span>' +
+        '<span class="dl-grp"><em>Pause</em>' + b("p",-15,"◀ 15") + b("p",15,"15 ▶") + '</span>' +
+      '</div></div>';
+  }
+  function panelHtml(day){
+    var d = getMonthData().days[day] || {};
+    var has = dayHasData(d);
+    var html = '<div class="dl-panel" data-day="' + day + '">';
+    html += '<div class="dl-quick"><input type="text" class="dl-input" inputmode="text" autocomplete="off" spellcheck="false" ' +
+      'placeholder="Schnell tippen: 630-15 · 2230-7 p3 · 630-14 / 1430-2230 · u = Urlaub · 0 = frei" aria-label="Zeiten schnell eingeben">' +
+      '<button type="button" class="btn btn-primary btn-sm" data-act="apply">↵ Übernehmen</button></div>';
+    html += '<div class="dl-err" aria-live="polite">' + (listError ? "⚠️ " + listError : "") + '</div>';
+    html += '<div class="dl-chips">';
+    Object.keys(presetMeta).forEach(function(k){ html += chipHtml("set", k); });
+    html += chipHtml("set", "urlaub") + chipHtml("set", "clear") + '</div>';
+    if(has){
+      html += adjHtml(d, 1);
+      if(d.s2start) html += adjHtml(d, 2);
+      else {
+        html += '<div class="dl-chips dl-second"><span class="dl-second-lbl">➕ 2. Schicht:</span>';
+        Object.keys(presetMeta).forEach(function(k){ html += chipHtml("set2", k, true); });
+        html += '</div>';
+      }
+    }
+    var warns = dayWarnings(day);
+    if(warns.length){
+      html += '<ul class="dl-warns">' + warns.map(function(w){ return "<li>⚠️ " + w + "</li>"; }).join("") + '</ul>';
+    }
+    html += '<div class="dl-actions">' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="nav" data-d="-1">↑ Voriger Tag</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="nav" data-d="1">↓ Nächster Tag</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="copyprev">⧉ Wie Vortag</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="details">⋯ Details / Entlohnungsart</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm js-undo" data-act="undo"' + (undoStack.length ? '' : ' disabled') + '>↶ Rückgängig</button>' +
+      '</div>';
+    return html + '</div>';
+  }
+  function rowHtml(day){
+    var d = getMonthData().days[day] || {};
+    var has = dayHasData(d);
+    var jsWd = new Date(currentYear, currentMonth, day).getDay();
+    var wd = weekdayAbbrev(currentYear, currentMonth, day);
+    var warns = has ? dayWarnings(day) : [];
+    var html = '<div class="dl-row' + (selectedDay === day ? " sel" : "") + ((jsWd === 0 || jsWd === 6) ? " weekend" : "") + '" data-day="' + day + '" role="button" tabindex="0" aria-label="' + day + '. ' + germanMonths[currentMonth] + ' bearbeiten">';
+    html += '<div class="dl-date">' + wd + ' <b>' + day + '</b></div>';
+    html += '<div class="dl-track"><span class="dl-midnight"></span>';
+    if(has){
+      html += barHtml(d, 1, d.preset);
+      if(d.s2start) html += barHtml(d, 2, d.preset2);
+    } else if(d.urlaub){
+      html += '<div class="dl-urlaub">🏖️ Urlaub</div>';
+    } else if(selectedDay === day){
+      html += '<div class="dl-empty">leer – unten Schicht wählen oder Zeiten tippen</div>';
+    }
+    html += '</div>';
+    html += '<div class="dl-sum">' + (has ? minutesToHoursComma(dayNetMinutes(d)) + " h" : "") +
+      (warns.length ? ' <span class="dl-warn" title="' + warns.join(" · ").replace(/"/g, "&quot;") + '">⚠️</span>' : '') + '</div>';
+    html += '</div>';
+    if(selectedDay === day) html += panelHtml(day);
+    return html;
+  }
+  function renderDayList(){
+    if(!dayList) return;
+    var total = daysInMonth(currentYear, currentMonth);
+    var axis = '<div class="dl-axis"><span></span><div class="dl-axis-track">';
+    for(var h = 6; h <= 30; h += 4){
+      axis += '<span style="left:' + pct(h*60) + '%">' + String(h % 24).padStart(2,"0") + '</span>';
+    }
+    axis += '</div><span class="dl-axis-sum">Std.</span></div>';
+    var html = axis;
+    for(var day=1; day<=total; day++) html += rowHtml(day);
+    dayList.innerHTML = html;
+    var mid = pct(24*60) + "%";
+    dayList.querySelectorAll(".dl-midnight").forEach(function(el){ el.style.left = mid; });
+  }
+
+  function selectDay(day, focusInput){
+    var total = daysInMonth(currentYear, currentMonth);
+    if(day < 1 || day > total) return;
+    listError = "";
+    selectedDay = day;
+    renderDayList();
+    var row = dayList.querySelector('.dl-row[data-day="' + day + '"]');
+    var panel = dayList.querySelector(".dl-panel");
+    if(panel && panel.scrollIntoView) panel.scrollIntoView({block:"nearest"});
+    if(row && row.scrollIntoView) row.scrollIntoView({block:"nearest"});
+    if(focusInput){
+      var inp = dayList.querySelector(".dl-input");
+      if(inp) inp.focus();
+    }
+  }
+  function afterListChange(){
+    saveState();
+    renderCalendar();
+  }
+
+  function applyQuick(day, text){
+    var r = parseQuick(text);
+    if(r.error){ listError = r.error; renderDayList(); var i = dayList.querySelector(".dl-input"); if(i){ i.value = text; i.focus(); } return false; }
+    var md = getMonthData();
+    var old = md.days[day] || {};
+    pushUndo();
+    if(r.clear) delete md.days[day];
+    else if(r.urlaub) md.days[day] = { urlaub:true, entlohnung: old.entlohnung || "" };
+    else if(r.preset) md.days[day] = singleShift(r.preset, old);
+    else {
+      var a = r.shifts[0], b = r.shifts[1];
+      var nd = { s1start:a.start, s1end:a.end, b1start:a.bstart, b1end:a.bend,
+        s2start:"", s2end:"", b2start:"", b2end:"", entlohnung: old.entlohnung || "" };
+      if(b){ nd.s2start = b.start; nd.s2end = b.end; nd.b2start = b.bstart; nd.b2end = b.bend; }
+      orderShifts(nd);
+      detectPresets(nd);
+      md.days[day] = nd;
+    }
+    listError = "";
+    afterListChange();
+    return true;
+  }
+
+  function adjustShift(day, idx, what, delta){
+    var d = getMonthData().days[day];
+    if(!dayHasData(d)) return;
+    var w = shiftWin(d, idx);
+    if(!w) return;
+    pushUndo();
+    if(what === "s") w.s = clampNum(w.s + delta, w.e - 1440 + 15, w.e - 15);
+    else if(what === "e") w.e = clampNum(w.e + delta, w.s + 15, w.s + 1440 - 15);
+    else if(what === "p"){
+      if(w.ps == null){ var ap = autoPause(w.s, w.e); if(ap[0] == null){ ap = [round15(w.s + (w.e - w.s)/2) - 15, 0]; ap[1] = ap[0] + 30; } w.ps = ap[0]; w.pe = ap[1]; }
+      else { w.ps += delta; w.pe += delta; }
+    }
+    fitPause(w);
+    writeShift(d, idx, w);
+    detectPresets(d);
+    afterListChange();
+  }
+
+  if(dayList){
+    dayList.addEventListener("click", function(e){
+      var btn = e.target.closest("[data-act]");
+      var day = selectedDay;
+      if(btn && dayList.contains(btn)){
+        var act = btn.dataset.act;
+        var md = getMonthData();
+        var old = md.days[day] || {};
+        if(act === "apply"){
+          var inp = dayList.querySelector(".dl-input");
+          if(inp && applyQuick(day, inp.value)) selectDay(Math.min(day + 1, daysInMonth(currentYear, currentMonth)), true);
+        } else if(act === "set"){
+          var k = btn.dataset.k;
+          pushUndo();
+          if(k === "clear") delete md.days[day];
+          else if(k === "urlaub") md.days[day] = { urlaub:true, entlohnung: old.entlohnung || "" };
+          else md.days[day] = singleShift(k, old);
+          afterListChange();
+        } else if(act === "set2"){
+          if(!dayHasData(old)) return;
+          var p = shiftPresets[btn.dataset.k];
+          pushUndo();
+          old.s2start = p.start; old.s2end = p.end; old.b2start = p.bstart; old.b2end = p.bend;
+          old.preset2 = btn.dataset.k;
+          orderShifts(old);
+          afterListChange();
+        } else if(act === "rm2"){
+          pushUndo();
+          old.s2start = old.s2end = old.b2start = old.b2end = ""; old.preset2 = "";
+          afterListChange();
+        } else if(act === "adj"){
+          adjustShift(day, parseInt(btn.dataset.i, 10), btn.dataset.w, parseInt(btn.dataset.d, 10));
+        } else if(act === "nav"){
+          selectDay(day + parseInt(btn.dataset.d, 10), false);
+        } else if(act === "copyprev"){
+          var src = peekDay(currentYear, currentMonth, day - 1);
+          if(!dayHasData(src) && !(src && src.urlaub)){ listError = "Der Vortag ist leer"; renderDayList(); return; }
+          pushUndo();
+          md.days[day] = JSON.parse(JSON.stringify(src));
+          afterListChange();
+        } else if(act === "details"){
+          openDetail(day);
+        } else if(act === "undo"){
+          undo();
+        }
+        return;
+      }
+      if(e.target.closest(".dl-panel")) return;
+      var row = e.target.closest(".dl-row");
+      if(!row) return;
+      if(listSuppressClick) return;
+      var rd = parseInt(row.dataset.day, 10);
+      if(selectedDay === rd){ selectedDay = null; listError = ""; renderDayList(); }
+      else selectDay(rd, false);
+    });
+
+    dayList.addEventListener("keydown", function(e){
+      if(e.target.classList.contains("dl-input")){
+        var total = daysInMonth(currentYear, currentMonth);
+        if(e.key === "Enter"){
+          e.preventDefault();
+          if(applyQuick(selectedDay, e.target.value)) selectDay(Math.min(selectedDay + 1, total), true);
+        } else if(e.key === "ArrowDown" || e.key === "ArrowUp"){
+          e.preventDefault();
+          selectDay(selectedDay + (e.key === "ArrowDown" ? 1 : -1), true);
+        } else if(e.key === "Escape"){
+          selectedDay = null; listError = ""; renderDayList();
+        }
+        return;
+      }
+      var row = e.target.closest(".dl-row");
+      if(row && (e.key === "Enter" || e.key === " ")){
+        e.preventDefault();
+        selectDay(parseInt(row.dataset.day, 10), true);
+      }
+    });
+
+    // Ziehen: Enden = Beginn/Ende, gestreifter Block = Pause (15-Min.-Raster)
+    dayList.addEventListener("pointerdown", function(e){
+      var h = e.target.closest("[data-drag]");
+      if(!h || e.button !== 0) return;
+      var row = h.closest(".dl-row");
+      var day = parseInt(row.dataset.day, 10);
+      var idx = parseInt(h.dataset.i, 10);
+      var d = getMonthData().days[day];
+      var w = shiftWin(d, idx);
+      if(!w) return;
+      e.preventDefault();
+      var rect = row.querySelector(".dl-track").getBoundingClientRect();
+      pushUndo();
+      listDrag = { id:e.pointerId, day:day, idx:idx, kind:h.dataset.drag, rect:rect, w0:w,
+        grab: WIN_START + (e.clientX - rect.left) / rect.width * WIN_LEN, before: JSON.stringify(d) };
+      if(selectedDay !== day){ selectedDay = day; listError = ""; }
+      document.addEventListener("pointermove", onListDragMove);
+      document.addEventListener("pointerup", onListDragEnd);
+      document.addEventListener("pointercancel", onListDragEnd);
+    });
+  }
+  function onListDragMove(e){
+    if(!listDrag || e.pointerId !== listDrag.id) return;
+    var r = listDrag.rect;
+    var m = WIN_START + (e.clientX - r.left) / r.width * WIN_LEN;
+    var w = {s:listDrag.w0.s, e:listDrag.w0.e, ps:listDrag.w0.ps, pe:listDrag.w0.pe};
+    if(listDrag.kind === "s") w.s = clampNum(round15(m), Math.max(WIN_START, w.e - 1440 + 15), w.e - 15);
+    else if(listDrag.kind === "e") w.e = clampNum(round15(m), w.s + 15, Math.min(WIN_END, w.s + 1440 - 15));
+    else if(listDrag.kind === "p" && w.ps != null){
+      var len = w.pe - w.ps;
+      w.ps = clampNum(w.ps + round15(m - listDrag.grab), w.s, w.e - len);
+      w.pe = w.ps + len;
+    }
+    fitPause(w);
+    var d = getMonthData().days[listDrag.day];
+    writeShift(d, listDrag.idx, w);
+    detectPresets(d);
+    renderDayList();
+    updateMonthTotal();
+  }
+  function onListDragEnd(e){
+    if(!listDrag || e.pointerId !== listDrag.id) return;
+    var d = getMonthData().days[listDrag.day];
+    if(JSON.stringify(d) === listDrag.before){ undoStack.pop(); setUndoState(); }
+    else { listSuppressClick = true; setTimeout(function(){ listSuppressClick = false; }, 0); }
+    listDrag = null;
+    document.removeEventListener("pointermove", onListDragMove);
+    document.removeEventListener("pointerup", onListDragEnd);
+    document.removeEventListener("pointercancel", onListDragEnd);
+    afterListChange();
+  }
 
   // ---------- day panel ----------
   var dayPanel = document.getElementById("dayPanel");
