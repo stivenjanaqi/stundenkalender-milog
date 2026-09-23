@@ -77,7 +77,7 @@
   .total-badge span{display:block; font-size:.68rem; font-weight:600; color:var(--muted); text-transform:uppercase;}
 
   .calendar-grid{
-    display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:14px;
+    display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px; margin-top:14px;
   }
   .wd-label{text-align:center; font-size:.72rem; font-weight:700; color:var(--muted); padding-bottom:2px;}
   .day-cell{
@@ -127,8 +127,10 @@
   /* ---------- Schnellmodus (Stempel) ---------- */
   .p-night{--pc:#3b5bdb; --pbg:#e8edfc;}
   .p-morning{--pc:#b87a0e; --pbg:#fff3d9;}
-  .p-sunday{--pc:#7b4fc4; --pbg:#f0e8fb;}
-  .p-satlong{--pc:#c2456b; --pbg:#fde7ee;}
+  .p-morning15{--pc:#d9480f; --pbg:#fff0e6;}
+  .p-late{--pc:#7b4fc4; --pbg:#f0e8fb;}
+  .p-late23{--pc:#c2456b; --pbg:#fde7ee;}
+  .p-urlaub{--pc:#2b8a3e; --pbg:#e6f6ea;}
   .p-clear{--pc:#6b7785; --pbg:#f1f3f5;}
   .p-manual{--pc:var(--teal); --pbg:var(--teal-light);}
   .cal-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
@@ -148,7 +150,8 @@
     border-radius:0 0 12px 12px; box-shadow:0 -6px 16px rgba(15,41,66,.08);
   }
   .stamp-bar-title{font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;}
-  .brush-row{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px;}
+  .brush-row{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px;}
+  .btn-toggle.active{background:var(--navy); color:#fff;}
   .brush{
     border:2px solid transparent; border-radius:10px; padding:8px 4px 6px; background:var(--pbg);
     color:var(--text); cursor:pointer; font:inherit; display:flex; flex-direction:column;
@@ -158,7 +161,8 @@
   .brush.active{border-color:var(--pc); box-shadow:0 0 0 3px rgba(15,41,66,.10); transform:translateY(-1px);}
   .brush-ico{font-size:1.2rem; line-height:1.1;}
   .brush-name{font-size:.74rem; font-weight:700; color:var(--pc); text-align:center; line-height:1.15;}
-  .brush-time{font-size:.64rem; color:var(--muted);}
+  .brush-time{font-size:.64rem; color:var(--muted); white-space:nowrap;}
+  .brush.is-shift .brush-time{font-weight:600; color:var(--text);}
   .brush kbd{position:absolute; top:3px; left:5px; font-size:.6rem; font-family:inherit; color:var(--muted); border:1px solid var(--border); border-radius:3px; padding:0 3px; background:#fff;}
   .brush-count{position:absolute; top:3px; right:6px; font-size:.64rem; font-weight:700; color:var(--pc);}
   .stamp-tools{display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap;}
@@ -203,8 +207,12 @@
     .day-dialog-body{padding:14px;}
     .day-dialog-head{padding:14px;}
     .save-status{width:100%; margin-left:0;}
-    .brush-time{display:none;}
+    .brush-row{grid-template-columns:repeat(4,minmax(0,1fr));}
+    .brush.is-shift .brush-name{display:none;}
+    .brush:not(.is-shift) .brush-time{display:none;}
     .day-hours{white-space:nowrap; font-size:.66rem; letter-spacing:-.02em;}
+    .day-ico{display:block; letter-spacing:0;}
+    .day-lbl{display:none;}
     .brush kbd{display:none;}
     .brush-name{font-size:.68rem;}
     .stamp-bar{margin:12px -16px -16px; padding-left:8px; padding-right:8px;}
@@ -271,6 +279,7 @@
         <div class="stamp-bar-title">Schicht wählen, dann Tage antippen</div>
         <div class="brush-row" id="brushRow"></div>
         <div class="stamp-tools">
+          <button class="btn btn-ghost btn-sm btn-toggle" type="button" id="btnSecondStamp" aria-pressed="false">➕ 2. Schicht</button>
           <button class="btn btn-ghost btn-sm" type="button" id="btnUndo" disabled>↶ Rückgängig</button>
           <button class="btn btn-ghost btn-sm" type="button" id="btnRepeatWeek">🔁 Erste Woche wiederholen</button>
           <span class="stamp-status" id="stampStatus" aria-live="polite"></span>
@@ -651,27 +660,36 @@
 
   // ---------- Schnellmodus: Stempel-Definitionen ----------
   var UI_KEY = "milogCalendar_ui";
+  // Zusätzliche Schichten nur für den Schnellmodus (Tagesdialog bleibt unverändert)
+  shiftPresets.morning15 = {start:"06:30", end:"15:00", bstart:"10:00", bend:"10:30"};
+  shiftPresets.late      = {start:"14:30", end:"22:30", bstart:"18:00", bend:"18:30"};
+  shiftPresets.late23    = {start:"14:30", end:"23:00", bstart:"18:00", bend:"18:30"};
   var presetMeta = {
-    night:   {ico:"🌙", name:"Nacht",        key:"n", num:"1"},
-    morning: {ico:"🌅", name:"Früh",         key:"f", num:"2"},
-    sunday:  {ico:"🌃", name:"Lange Nacht",  key:"l", num:"3"},
-    satlong: {ico:"🌆", name:"Langer Sa",    key:"s", num:"4"}
+    night:     {ico:"🌙", name:"Nacht",     key:"n", num:"1"},
+    morning:   {ico:"🌅", name:"Früh",      key:"f", num:"2"},
+    morning15: {ico:"🌄", name:"Früh lang", key:"g", num:"3"},
+    late:      {ico:"🌇", name:"Spät",      key:"s", num:"4"},
+    late23:    {ico:"🌆", name:"Spät lang", key:"t", num:"5"}
   };
-  var brushOrder = ["night","morning","sunday","satlong","clear"];
-  var keyToBrush = {"0":"clear", "x":"clear", "delete":"clear", "backspace":"clear"};
+  var brushOrder = ["night","morning","morning15","late","late23","urlaub","clear"];
+  var keyToBrush = {"u":"urlaub", "0":"clear", "x":"clear", "delete":"clear", "backspace":"clear"};
   Object.keys(presetMeta).forEach(function(k){
     keyToBrush[presetMeta[k].key] = k;
     keyToBrush[presetMeta[k].num] = k;
   });
+  function brushName(k){
+    if(presetMeta[k]) return presetMeta[k].name;
+    return k === "urlaub" ? "Urlaub" : "Frei";
+  }
 
-  var uiPrefs = { mode:"stamp", brush:"night" };
+  var uiPrefs = { mode:"stamp", brush:"night", second:false };
   try{
     var rawUi = JSON.parse(localStorage.getItem(UI_KEY) || "null");
     if(rawUi && (rawUi.mode === "stamp" || rawUi.mode === "detail")) uiPrefs.mode = rawUi.mode;
     if(rawUi && brushOrder.indexOf(rawUi.brush) !== -1) uiPrefs.brush = rawUi.brush;
   }catch(e){}
   function saveUiPrefs(){
-    try{ localStorage.setItem(UI_KEY, JSON.stringify(uiPrefs)); }catch(e){}
+    try{ localStorage.setItem(UI_KEY, JSON.stringify({mode:uiPrefs.mode, brush:uiPrefs.brush})); }catch(e){}
   }
 
   // ---------- calendar rendering ----------
@@ -679,10 +697,13 @@
     var d = getDay(day);
     var mins = dayNetMinutes(d);
     var has = dayHasData(d);
+    var isUrlaub = !has && !!d.urlaub;
     var jsWeekday = new Date(currentYear, currentMonth, day).getDay();
     var meta = has ? presetMeta[d.preset] : null;
-    cell.className = "day-cell" + (has ? " filled" : "") +
+    var meta2 = (has && d.s2start) ? presetMeta[d.preset2] : null;
+    cell.className = "day-cell" + (has || isUrlaub ? " filled" : "") +
       (has ? (meta ? " p-" + d.preset : " p-manual") : "") +
+      (isUrlaub ? " p-urlaub" : "") +
       (selectedDay===day ? " selected" : "") +
       ((jsWeekday === 0 || jsWeekday === 6) ? " weekend" : "");
     cell.innerHTML = "";
@@ -705,9 +726,21 @@
 
       var hEl = document.createElement("div");
       hEl.className = "day-hours";
-      hEl.textContent = (meta ? meta.ico + " " : "") + minutesToHoursComma(mins) + " h";
+      var icons = (meta ? meta.ico : "") + (meta2 ? meta2.ico : (d.s2start ? "➕" : ""));
+      if(icons){
+        var icoEl = document.createElement("span");
+        icoEl.className = "day-ico"; icoEl.textContent = icons + " ";
+        hEl.appendChild(icoEl);
+      }
+      hEl.appendChild(document.createTextNode(minutesToHoursComma(mins) + " h"));
       cell.appendChild(hEl);
-      cell.setAttribute("aria-label", day + ". " + germanMonths[currentMonth] + ", " + (meta ? meta.name + ", " : "") + txt + ", " + minutesToHoursComma(mins) + " Stunden.");
+      cell.setAttribute("aria-label", day + ". " + germanMonths[currentMonth] + ", " + txt + ", " + minutesToHoursComma(mins) + " Stunden.");
+    } else if(isUrlaub){
+      var uEl = document.createElement("div");
+      uEl.className = "day-hours";
+      uEl.innerHTML = '<span class="day-ico">🏖️ </span><span class="day-lbl">Urlaub</span>';
+      cell.appendChild(uEl);
+      cell.setAttribute("aria-label", day + ". " + germanMonths[currentMonth] + ", Urlaub.");
     } else {
       var actionEl = document.createElement("div");
       actionEl.className = "cell-action" + (uiPrefs.mode === "stamp" ? " faint" : "");
@@ -721,10 +754,14 @@
     var totalDays = daysInMonth(currentYear, currentMonth);
     var monthMinutes = 0;
     var counts = {};
+    function inc(k){ counts[k] = (counts[k] || 0) + 1; }
     for(var day=1; day<=totalDays; day++){
       var d = getDay(day);
       monthMinutes += dayNetMinutes(d);
-      if(dayHasData(d) && presetMeta[d.preset]) counts[d.preset] = (counts[d.preset] || 0) + 1;
+      if(dayHasData(d)){
+        if(presetMeta[d.preset]) inc(d.preset);
+        if(d.s2start && presetMeta[d.preset2]) inc(d.preset2);
+      } else if(d.urlaub) inc("urlaub");
     }
     document.getElementById("monthTotalDisplay").textContent = minutesToHoursComma(monthMinutes) + " h";
     brushRow.querySelectorAll("[data-brush]").forEach(function(b){
@@ -770,25 +807,25 @@
   var stampBar = document.getElementById("stampBar");
   var stampStatusEl = document.getElementById("stampStatus");
   var btnUndo = document.getElementById("btnUndo");
+  var btnSecond = document.getElementById("btnSecondStamp");
   var stampStatusTimer = null;
 
   brushOrder.forEach(function(k){
     var b = document.createElement("button");
     b.type = "button";
-    b.className = "brush p-" + k;
-    b.dataset.brush = k;
     var meta = presetMeta[k];
+    b.className = "brush p-" + k + (meta ? " is-shift" : "");
+    b.dataset.brush = k;
     var p = shiftPresets[k];
-    var ico = meta ? meta.ico : "🧽";
-    var name = meta ? meta.name : "Frei";
-    var time = p ? (p.start + "–" + p.end) : "löschen";
-    var key = meta ? meta.key.toUpperCase() : "0";
+    var ico = meta ? meta.ico : (k === "urlaub" ? "🏖️" : "🧽");
+    var time = p ? (p.start + "–" + p.end) : (k === "urlaub" ? "kein Dienst" : "löschen");
+    var key = meta ? meta.num : (k === "urlaub" ? "U" : "0");
     b.innerHTML = '<kbd></kbd><span class="brush-count"></span><span class="brush-ico"></span><span class="brush-name"></span><span class="brush-time"></span>';
     b.querySelector("kbd").textContent = key;
     b.querySelector(".brush-ico").textContent = ico;
-    b.querySelector(".brush-name").textContent = name;
+    b.querySelector(".brush-name").textContent = brushName(k);
     b.querySelector(".brush-time").textContent = time;
-    b.title = name + " (" + time + ") · Taste " + key;
+    b.title = brushName(k) + (p ? " (" + time + ", Pause " + p.bstart + "–" + p.bend + ")" : "") + " · Taste " + key;
     b.addEventListener("click", function(){ setBrush(k); });
     brushRow.appendChild(b);
   });
@@ -802,6 +839,15 @@
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
   }
+
+  function setSecond(on){
+    uiPrefs.second = !!on;
+    btnSecond.classList.toggle("active", uiPrefs.second);
+    btnSecond.setAttribute("aria-pressed", uiPrefs.second ? "true" : "false");
+    btnSecond.textContent = uiPrefs.second ? "➕ 2. Schicht: AN" : "➕ 2. Schicht";
+    showStampStatus(uiPrefs.second ? "Tippen fügt jetzt eine zweite Schicht hinzu" : "Zweite Schicht aus");
+  }
+  btnSecond.addEventListener("click", function(){ setSecond(!uiPrefs.second); });
 
   function showStampStatus(msg){
     stampStatusEl.textContent = msg;
@@ -823,8 +869,8 @@
     var hint = document.getElementById("calHint");
     if(stamp){
       hint.innerHTML = 'Unten eine Schicht wählen und Tage <strong>antippen</strong> – oder mit Finger/Maus <strong>über mehrere Tage ziehen</strong>. ' +
-        'Nochmals tippen = löschen. <strong>Lange drücken</strong> oder Rechtsklick = Details (zweite Schicht, eigene Zeiten).' +
-        '<span class="kbd-hint"> Tastatur: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Tag wählen, <kbd>N</kbd> <kbd>F</kbd> <kbd>L</kbd> <kbd>S</kbd> eintragen, <kbd>0</kbd> löschen, <kbd>Strg</kbd>+<kbd>Z</kbd> rückgängig.</span>';
+        'Nochmals tippen = löschen. Für zwei Schichten an einem Tag <strong>➕ 2. Schicht</strong> einschalten. <strong>Lange drücken</strong> oder Rechtsklick = Details (eigene Zeiten).' +
+        '<span class="kbd-hint"> Tastatur: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Tag wählen, <kbd>1</kbd>–<kbd>5</kbd> Schicht, <kbd>U</kbd> Urlaub, <kbd>0</kbd> löschen, <kbd>+</kbd> 2. Schicht, <kbd>Strg</kbd>+<kbd>Z</kbd> rückgängig.</span>';
     } else {
       hint.textContent = "Wähle eine vorbereitete Schicht oder trage Zeiten manuell ein. Alle Änderungen werden sofort auf diesem Gerät gespeichert.";
     }
@@ -861,34 +907,77 @@
     undo();
   });
 
-  // Stempel anwenden – gleiche Datenstruktur wie die Schnellauswahl im Tagesdialog
-  function stampDay(day, k){
-    var md = getMonthData();
-    if(k === "clear"){ delete md.days[day]; return; }
+  // Stempel anwenden – gleiche Datenstruktur wie der Tagesdialog (s1…/s2…),
+  // damit Formular und PDF unverändert funktionieren.
+  function singleShift(k, old){
     var p = shiftPresets[k];
-    var old = md.days[day] || {};
-    md.days[day] = {
+    return {
       s1start:p.start, s1end:p.end, b1start:p.bstart, b1end:p.bend,
       s2start:"", s2end:"", b2start:"", b2end:"",
-      entlohnung: old.entlohnung || "",
-      preset: k
+      entlohnung: (old && old.entlohnung) || "",
+      preset: k, preset2: ""
     };
   }
-  function applyToDay(day, k, animate){
-    stampDay(day, k);
-    saveState();
-    updateCell(day, animate);
-    updateMonthTotal();
+  // Zwei Schichten zeitlich sortieren (frühere zuerst) und Überschneidung prüfen
+  function orderShifts(d){
+    if(!(d.s1start && d.s2start)) return false;
+    if(toMinutes(d.s2start) < toMinutes(d.s1start)){
+      var pairs = [["s1start","s2start"],["s1end","s2end"],["b1start","b2start"],["b1end","b2end"],["preset","preset2"]];
+      pairs.forEach(function(p){ var t = d[p[0]]; d[p[0]] = d[p[1]]; d[p[1]] = t; });
+    }
+    var e1 = toMinutes(d.s1end); if(e1 <= toMinutes(d.s1start)) e1 += 24*60;
+    return toMinutes(d.s2start) < e1;
   }
-  // Einzelner Tipp: gleicher Stempel nochmals = Tag leeren
-  function tapStamp(day){
-    var d = getMonthData().days[day];
-    var k = uiPrefs.brush;
-    if(k !== "clear" && dayHasData(d) && d.preset === k) k = "clear";
-    if(k === "clear" && !dayHasData(d)) return;
+  // Liefert eine kurze Statusmeldung zurück
+  function stampDay(day, k, isTap){
+    var md = getMonthData();
+    var old = md.days[day];
+    var has = dayHasData(old);
+    if(k === "clear"){
+      if(!has && !(old && old.urlaub)) return null;
+      delete md.days[day];
+      return day + ". gelöscht";
+    }
+    if(k === "urlaub"){
+      if(isTap && old && old.urlaub && !has){ delete md.days[day]; return day + ". gelöscht"; }
+      md.days[day] = { urlaub:true, entlohnung:(old && old.entlohnung) || "" };
+      return day + ". → Urlaub";
+    }
+    var name = presetMeta[k].name;
+    if(uiPrefs.second && has){
+      if(isTap && old.s2start && old.preset2 === k){
+        old.s2start = old.s2end = old.b2start = old.b2end = ""; old.preset2 = "";
+        return day + ". zweite Schicht entfernt";
+      }
+      if(isTap && !old.s2start && old.preset === k){ delete md.days[day]; return day + ". gelöscht"; }
+      if(!old.s2start && old.preset === k) return null;
+      var p = shiftPresets[k];
+      old.s2start = p.start; old.s2end = p.end; old.b2start = p.bstart; old.b2end = p.bend;
+      old.preset2 = k;
+      delete old.urlaub;
+      var overlap = orderShifts(old);
+      return day + ". + " + name + (overlap ? " ⚠️ Zeiten überschneiden sich" : "");
+    }
+    if(isTap && has && old.preset === k && !old.s2start){ delete md.days[day]; return day + ". gelöscht"; }
+    md.days[day] = singleShift(k, old);
+    return day + ". → " + name;
+  }
+  function applyToDay(day, k, isTap){
+    var msg = stampDay(day, k, isTap);
+    saveState();
+    updateCell(day, true);
+    updateMonthTotal();
+    return msg;
+  }
+  function tapStamp(day, k){
+    k = k || uiPrefs.brush;
+    var snapBefore = JSON.stringify(getMonthData().days[day] || null);
     pushUndo();
-    applyToDay(day, k, true);
-    showStampStatus(k === "clear" ? day + ". gelöscht" : day + ". → " + presetMeta[k].name);
+    var msg = applyToDay(day, k, true);
+    if(!msg && JSON.stringify(getMonthData().days[day] || null) === snapBefore){
+      undoStack.pop(); btnUndo.disabled = undoStack.length === 0;
+    }
+    if(msg) showStampStatus(msg);
   }
 
   function openDetail(day){
@@ -925,10 +1014,13 @@
       stroke.started = true;
       if(longTimer){ clearTimeout(longTimer); longTimer = null; }
       pushUndo();
-      applyToDay(stroke.start, uiPrefs.brush, true);
+      applyToDay(stroke.start, uiPrefs.brush, false);
+      stroke.days[stroke.start] = true;
     }
-    applyToDay(day, uiPrefs.brush, true);
-    stroke.count++;
+    if(!stroke.days[day]){
+      applyToDay(day, uiPrefs.brush, false);
+      stroke.days[day] = true;
+    }
     stroke.last = day;
   }
   function onStrokeUp(e){
@@ -936,7 +1028,9 @@
     suppressClickUntil = Date.now() + 500;
     if(stroke.long){ /* Details wurden geöffnet */ }
     else if(stroke.started){
-      showStampStatus((stroke.count + 1) + " Tage " + (uiPrefs.brush === "clear" ? "gelöscht" : "→ " + presetMeta[uiPrefs.brush].name));
+      var n = Object.keys(stroke.days).length;
+      var b = uiPrefs.brush;
+      showStampStatus(n + " Tage " + (b === "clear" ? "gelöscht" : (uiPrefs.second && presetMeta[b] ? "+ " : "→ ") + brushName(b)));
     }
     else tapStamp(stroke.start);
     endStroke();
@@ -952,7 +1046,7 @@
     if(!cell) return;
     endStroke();
     var day = parseInt(cell.dataset.day, 10);
-    stroke = { id:e.pointerId, start:day, last:day, started:false, long:false, count:0, x:e.clientX, y:e.clientY };
+    stroke = { id:e.pointerId, start:day, last:day, started:false, long:false, days:{}, x:e.clientX, y:e.clientY };
     if(e.pointerType !== "mouse"){
       longTimer = setTimeout(function(){
         longTimer = null;
@@ -1000,16 +1094,12 @@
     else if(k === "arrowright") target = day + 1;
     else if(k === "arrowup") target = day - 7;
     else if(k === "arrowdown") target = day + 7;
+    else if(k === "+"){ setSecond(!uiPrefs.second); }
     else if(keyToBrush[k]){
       var b = keyToBrush[k];
       if(b !== "clear") setBrush(b);
-      if(b === "clear" && !dayHasData(getMonthData().days[day])){ target = day + 1; }
-      else {
-        pushUndo();
-        applyToDay(day, b, true);
-        showStampStatus(b === "clear" ? day + ". gelöscht" : day + ". → " + presetMeta[b].name);
-        target = day + 1;
-      }
+      tapStamp(day, b);
+      target = day + 1;
     }
     else return;
     e.preventDefault();
@@ -1026,7 +1116,8 @@
     pushUndo();
     var n = 0;
     for(day=8; day<=total; day++){
-      if(dayHasData(md.days[day])) continue;
+      var cur = md.days[day];
+      if(dayHasData(cur) || (cur && cur.urlaub)) continue;
       var s = md.days[((day-1) % 7) + 1];
       if(!dayHasData(s)) continue;
       md.days[day] = JSON.parse(JSON.stringify(s));
@@ -1120,7 +1211,9 @@
       d.s2start = ""; d.s2end = ""; d.b2start = ""; d.b2end = "";
     }
     d.entlohnung = fld.entlohnung.value;
-    if(!retainPreset) d.preset = "";
+    if(!retainPreset){ d.preset = ""; d.preset2 = ""; }
+    if(!chkSecondShift.checked) d.preset2 = "";
+    if(dayHasData(d)) delete d.urlaub;
     saveState();
     updateDayPanelTotal();
     updatePresetSelection(d);
@@ -1134,7 +1227,7 @@
   });
   chkSecondShift.addEventListener("change", function(){
     shift2Block.style.display = chkSecondShift.checked ? "block" : "none";
-    persistFieldsToDay(true, false);
+    persistFieldsToDay(true, true);
   });
 
   document.querySelectorAll("[data-preset]").forEach(function(btn){
