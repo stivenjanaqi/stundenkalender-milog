@@ -19,7 +19,13 @@ Ein einfacher, browserbasierter Stundenkalender für die Arbeitszeiterfassung na
 ## Nutzung
 
 1. Monat auswählen und die Mitarbeiterdaten einmal eintragen.
-2. Einen Kalendertag anklicken und eine vorbereitete Schicht wählen oder die Zeiten manuell eintragen.
+2. Schichten eintragen – am schnellsten im Modus **⚡ Schnell**:
+   - Unten eine Schicht wählen (🌙 Nacht, 🌅 Früh, 🌃 Lange Nacht, 🌆 Langer Sa oder 🧽 Frei).
+   - Tage antippen oder mit Finger/Maus über mehrere Tage ziehen. Nochmals tippen = Tag löschen.
+   - Lange drücken bzw. Rechtsklick öffnet die Details (zweite Schicht, eigene Zeiten, Entlohnungsart).
+   - **🔁 Erste Woche wiederholen** überträgt Tag 1–7 auf alle leeren Tage des Monats; **↶ Rückgängig** macht jeden Schritt rückgängig.
+   - Tastatur: Pfeiltasten wählen den Tag, `N` `F` `L` `S` tragen ein, `0` löscht, `Strg`+`Z` macht rückgängig.
+   - Im Modus **✏️ Detail** öffnet ein Klick wie bisher den Tagesdialog.
 3. Unter **Formular (Druck / PDF)** auf **Offizielles PDF erzeugen** klicken.
 4. Das fertige MiLoG-PDF herunterladen und an die Buchhaltung weitergeben.
 
