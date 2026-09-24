@@ -2,6 +2,10 @@
 
 Ein einfacher, browserbasierter Stundenkalender für die Arbeitszeiterfassung nach MiLoG. Arbeitszeiten werden automatisch berechnet; das offizielle PDF wird mit einem Klick erzeugt.
 
+## Live
+
+https://catalyst-al.github.io/stundenkalender-milog/
+
 ## Für GitHub Pages veröffentlichen
 
 1. Bei GitHub ein neues Repository erstellen, zum Beispiel `stundenkalender-milog`.
